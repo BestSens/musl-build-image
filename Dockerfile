@@ -40,7 +40,7 @@ RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_
 	cd /root/Temp/openssl-openssl-${OPENSSL_VERSION} && \
 	CC=gcc perl ./Configure linux-armv4 \
 		--cross-compile-prefix=arm-unknown-linux-musleabihf- \
-		--prefix=/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-musleabihf/opt \
+		--prefix=/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-musleabihf/opt/openssl-3 \
 		no-shared && \
 	make -j 12 && \
 	make install
