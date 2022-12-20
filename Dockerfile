@@ -1,6 +1,10 @@
-FROM docker.bestsens.de/bone/docker-build-image:2.0.3
-
+FROM debian:11
 RUN apt-get update -y && apt-get install -y --no-install-recommends --no-install-suggests \
+	wget \
+	build-essential \
+	python3 \
+	python3-jinja2 \
+	curl \
 	automake \
 	texinfo \
 	help2man \
@@ -9,9 +13,18 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends --no-install
 	flex \
 	file \
 	libtool-bin \
-	python3-jinja2 \
 	gperf \
-	autopoint
+	git \
+	libreadline8 \
+	libreadline-dev \
+	make \
+	ninja-build \
+	autopoint \
+	meson \
+	ccache \
+	pkg-config \
+	ca-certificates \
+	unzip
 RUN rm -Rf /var/lib/apt/lists/*
 
 RUN mkdir -p /root/Temp
