@@ -24,6 +24,8 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends --no-install
 	ccache \
 	pkg-config \
 	ca-certificates \
+	cmake \
+	libssl-dev \
 	unzip
 RUN rm -Rf /var/lib/apt/lists/*
 
@@ -143,5 +145,12 @@ RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_
 	sed -i 's/using gcc/using gcc : arm : arm-unknown-linux-musleabihf-g++/g' project-config.jam && \
 	./b2 install toolset=gcc-arm --without-python \
 		--prefix=/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-musleabihf
+
+ARG CMAKE_VERSION=3.25.1
+RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz -P /root/Temp && \
+	tar -xzf /root/Temp/cmake-${CMAKE_VERSION}.tar.gz -C /root/Temp && \
+	/root/Temp/cmake-${CMAKE_VERSION}/bootstrap && \
+	make /root/Temp/cmake-${CMAKE_VERSION} && \
+	make install /root/Temp/cmake-${CMAKE_VERSION}
 
 RUN rm -Rf /root/Temp
