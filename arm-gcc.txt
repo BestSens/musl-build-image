@@ -13,4 +13,4 @@ cpu = 'cortex-a9'
 endian = 'little'
 
 [properties]
-pkg_config_libdir = '/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-ebihf/lib/pkgconfig'
+pkg_config_libdir = '/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-musleabihf/lib/pkgconfig'

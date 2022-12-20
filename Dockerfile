@@ -51,7 +51,7 @@ RUN cd /root/Temp/ct-ng && ct-ng build
 
 ENV PATH=${PATH}:/opt/x-tools/arm-unknown-linux-musleabihf/bin
 
-ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-ebihf
+ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-musleabihf
 
 ENV PKG_CONFIG_LIBDIR=${TOOLCHAIN_PREFIX}/lib
 
@@ -144,7 +144,7 @@ RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_
 	./bootstrap.sh && \
 	sed -i 's/using gcc/using gcc : arm : arm-unknown-linux-musleabihf-g++/g' project-config.jam && \
 	./b2 install toolset=gcc-arm --without-python \
-		--prefix=/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-musleabihf
+		--prefix=${TOOLCHAIN_PREFIX}
 
 ARG CMAKE_VERSION=3.25.1
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz -P /root/Temp && \
