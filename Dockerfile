@@ -8,7 +8,10 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends --no-install
 	bison \
 	flex \
 	file \
-	libtool-bin
+	libtool-bin \
+	python3-jinja2 \
+	gperf \
+	autopoint
 RUN rm -Rf /var/lib/apt/lists/*
 
 RUN mkdir -p /root/Temp
@@ -33,6 +36,81 @@ RUN cd /root/Temp/ct-ng && ct-ng build
 
 ENV PATH=${PATH}:/opt/x-tools/arm-unknown-linux-musleabihf/bin
 
+ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-ebihf
+
+ENV PKG_CONFIG_LIBDIR=${TOOLCHAIN_PREFIX}/lib
+
+ARG LIBCAP_VERSION=2.66
+RUN wget https://mirrors.edge.kernel.org/debian/pool/main/libc/libcap2/libcap2_${LIBCAP_VERSION}.orig.tar.xz -P /root/Temp && \
+	tar xf /root/Temp/libcap2_${LIBCAP_VERSION}.orig.tar.xz -C /root/Temp && \
+	cd /root/Temp/libcap-${LIBCAP_VERSION} && \
+	make prefix=${TOOLCHAIN_PREFIX} \
+		BUILD_CC=gcc \
+		CC=arm-unknown-linux-musleabihf-gcc \
+		AR=arm-unknown-linux-musleabihf-ar \
+		RANLIB=arm-unknown-linux-musleabihf-ranlib \
+		OBJCOPY=arm-unknown-linux-musleabihf-objcopy \
+		lib=lib install
+
+ARG LINUX_PAM_VERSION=1.5.2
+RUN wget https://github.com/linux-pam/linux-pam/releases/download/v${LINUX_PAM_VERSION}/Linux-PAM-${LINUX_PAM_VERSION}.tar.xz -P /root/Temp && \
+	tar xf /root/Temp/Linux-PAM-${LINUX_PAM_VERSION}.tar.xz -C /root/Temp && \
+	cd /root/Temp/Linux-PAM-${LINUX_PAM_VERSION} && \
+	./configure	--prefix=${TOOLCHAIN_PREFIX} \
+		--host=arm-unknown-linux-musleabihf && \
+	make && make install
+
+ARG LIBCAP_NG_VERSION=0.8.3
+RUN wget https://github.com/stevegrubb/libcap-ng/archive/refs/tags/v${LIBCAP_NG_VERSION}.tar.gz -P /root/Temp && \
+	tar xf /root/Temp/v${LIBCAP_NG_VERSION}.tar.gz -C /root/Temp && \
+	cd /root/Temp/libcap-ng-${LIBCAP_NG_VERSION} && \
+	./autogen.sh && \
+ 	./configure CC=arm-unknown-linux-musleabihf-gcc --prefix=${TOOLCHAIN_PREFIX} \
+		--host=arm-unknown-linux-musleabihf && \
+	make && make install
+
+ARG UTIL_LINUX_VERSION=2.38.1
+RUN wget https://github.com/util-linux/util-linux/archive/refs/tags/v${UTIL_LINUX_VERSION}.tar.gz -P /root/Temp && \
+	tar xf /root/Temp/v${UTIL_LINUX_VERSION}.tar.gz -C /root/Temp && \
+	cd /root/Temp/util-linux-${UTIL_LINUX_VERSION} && \
+	./autogen.sh && \
+	CC=arm-unknown-linux-musleabihf-gcc ./configure \
+		--prefix=${TOOLCHAIN_PREFIX} \
+		--host=arm-unknown-linux-musleabihf --disable-all-programs --enable-libmount --enable-libblkid && \
+	make && make install
+
+COPY arm-gcc.txt /root/arm-gcc.txt
+
+ARG SYSTEMD_VERSION=251
+COPY systemd /root/Temp/systemd_patches/
+RUN wget https://github.com/systemd/systemd/archive/refs/tags/v${SYSTEMD_VERSION}.tar.gz -P /root/Temp && \
+	tar -xzf /root/Temp/v${SYSTEMD_VERSION}.tar.gz -C /root/Temp
+RUN cd /root/Temp/systemd-${SYSTEMD_VERSION} && \
+	for i in /root/Temp/systemd_patches/*.patch; do patch -p1 < $i; done
+RUN cd /root/Temp/systemd-${SYSTEMD_VERSION} && mkdir build && \
+	CFLAGS="-D__UAPI_DEF_ETHHDR=0 -I${TOOLCHAIN_PREFIX}/include" meson setup \
+		--prefix=${TOOLCHAIN_PREFIX} \
+		--buildtype=release \
+		--cross-file=/root/arm-gcc.txt \
+		-Dgshadow=false \
+		-Didn=false \
+		-Dlocaled=false \
+		-Dnss-systemd=false \
+		-Dnss-mymachines=false \
+		-Dnss-resolve=false \
+		-Dnss-myhostname=false \
+		-Dsysusers=false \
+		-Duserdb=false \
+		-Dutmp=false \
+		-Dtests=false \
+		-Dstatic-libsystemd=pic \
+		build && \
+	ninja -C build libsystemd.a src/libsystemd/libsystemd.pc && \
+	cp build/libsystemd.a ${TOOLCHAIN_PREFIX}/lib && \
+	cp build/src/libsystemd/libsystemd.pc ${TOOLCHAIN_PREFIX}/lib/pkgconfig && \
+	mkdir ${TOOLCHAIN_PREFIX}/include/systemd && \
+	cp src/systemd/*.h ${TOOLCHAIN_PREFIX}/include/systemd
+
 ARG OPENSSL_VERSION=3.0.7
 SHELL ["/bin/bash", "-c"]
 RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_VERSION}.tar.gz -P /root/Temp && \
@@ -40,7 +118,7 @@ RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_
 	cd /root/Temp/openssl-openssl-${OPENSSL_VERSION} && \
 	CC=gcc perl ./Configure linux-armv4 \
 		--cross-compile-prefix=arm-unknown-linux-musleabihf- \
-		--prefix=/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-musleabihf/opt/openssl-3 \
+		--prefix=${TOOLCHAIN_PREFIX} \
 		no-shared && \
 	make -j 12 && \
 	make install

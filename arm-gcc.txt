@@ -1,0 +1,16 @@
+[binaries]
+c = 'arm-unknown-linux-musleabihf-gcc'
+cpp = 'arm-unknown-linux-musleabihf-g++'
+ar = 'arm-unknown-linux-musleabihf-ar'
+strip = 'arm-unknown-linux-musleabihf-strip'
+pkgconfig = 'pkg-config'
+cmake = 'cmake'
+
+[host_machine]
+system = 'linux'
+cpu_family = 'arm'
+cpu = 'cortex-a9'
+endian = 'little'
+
+[properties]
+pkg_config_libdir = '/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-ebihf/lib/pkgconfig'
