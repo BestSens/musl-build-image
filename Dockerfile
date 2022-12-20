@@ -146,6 +146,15 @@ RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_
 	./b2 install toolset=gcc-arm --without-python \
 		--prefix=${TOOLCHAIN_PREFIX}
 
+ARG MODBUS_VERSION=3.1.10
+RUN wget https://github.com/stephane/libmodbus/releases/download/v${MODBUS_VERSION}/libmodbus-${MODBUS_VERSION}.tar.gz -P /root/Temp && \
+	tar -xzf /root/Temp/libmodbus-${MODBUS_VERSION}.tar.gz -C /root/Temp && \
+	cd /root/Temp/libmodbus-${MODBUS_VERSION} && \
+	./configure CC=arm-unknown-linux-musleabihf-gcc --prefix=${TOOLCHAIN_PREFIX} \
+		--host=arm-unknown-linux-musleabihf \
+		--with-pic --enable-static --enable-shared=no && \
+	make && make install
+
 ARG CMAKE_VERSION=3.25.1
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/cmake-${CMAKE_VERSION}.tar.gz -C /root/Temp && \
