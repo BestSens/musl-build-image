@@ -135,7 +135,7 @@ RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_
 		--cross-compile-prefix=arm-unknown-linux-musleabihf- \
 		--prefix=${TOOLCHAIN_PREFIX} \
 		no-shared && \
-	make -j 12 && \
+	make -j 6 && \
 	make install
 	
 RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_1_81_0.tar.gz -P /root/Temp && \
@@ -155,11 +155,30 @@ RUN wget https://github.com/stephane/libmodbus/releases/download/v${MODBUS_VERSI
 		--with-pic --enable-static --enable-shared=no && \
 	make && make install
 
+ARG LUA_VERSION=5.4.4
+RUN wget https://github.com/lua/lua/archive/refs/tags/v${LUA_VERSION}.tar.gz -P /root/Temp && \
+	tar -xzf /root/Temp/v${LUA_VERSION}.tar.gz -C /root/Temp && \
+	cd /root/Temp/lua-${LUA_VERSION} && \
+	sed -i 's/-march=native/-march=armv7-a -mtune=cortex-a9 -mfpu=neon/g' makefile && \
+	make CC=arm-unknown-linux-musleabihf-gcc \
+		AR="arm-unknown-linux-musleabihf-ar rc"  \
+		RANLIB=arm-unknown-linux-musleabihf-ranlib \
+		MYCFLAGS="-std=c99 -DLUA_USE_LINUX" \
+		liblua.a && \
+	mkdir -p ${TOOLCHAIN_PREFIX}/include/lua5.4 && \
+	cp *.h ${TOOLCHAIN_PREFIX}/include/lua5.4 && \
+	cp liblua.a ${TOOLCHAIN_PREFIX}/lib
+COPY lua.pc.in /root/Temp/lua-${LUA_VERSION}
+RUN cd /root/Temp/lua-${LUA_VERSION} && \
+	sed -e s/@VERSION@/${LUA_VERSION}/ -e s#@LIBDIR@#${TOOLCHAIN_PREFIX}/lib# \
+		-e s#@INCLUDEDIR@#${TOOLCHAIN_PREFIX}/include/lua5.4# lua.pc.in > lua5.4.pc && \
+	cp lua5.4.pc ${TOOLCHAIN_PREFIX}/lib/pkgconfig
+
 ARG CMAKE_VERSION=3.25.1
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/cmake-${CMAKE_VERSION}.tar.gz -C /root/Temp && \
 	/root/Temp/cmake-${CMAKE_VERSION}/bootstrap && \
-	make /root/Temp/cmake-${CMAKE_VERSION} && \
+	make -j 6 /root/Temp/cmake-${CMAKE_VERSION} && \
 	make install /root/Temp/cmake-${CMAKE_VERSION}
 
 RUN rm -Rf /root/Temp
