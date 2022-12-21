@@ -49,9 +49,9 @@ RUN mkdir -p /root/Temp/ct-ng
 COPY ct-ng.config /root/Temp/ct-ng/.config
 RUN cd /root/Temp/ct-ng && ct-ng build
 
-ENV PATH=${PATH}:/opt/x-tools/arm-unknown-linux-musleabihf/bin
+ENV PATH=${PATH}:/opt/x-tools/arm-bemos-linux-musleabihf/bin
 
-ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-unknown-linux-musleabihf/arm-unknown-linux-musleabihf
+ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-bemos-linux-musleabihf/arm-bemos-linux-musleabihf
 
 ENV PKG_CONFIG_LIBDIR=${TOOLCHAIN_PREFIX}/lib
 
@@ -61,10 +61,10 @@ RUN wget https://mirrors.edge.kernel.org/debian/pool/main/libc/libcap2/libcap2_$
 	cd /root/Temp/libcap-${LIBCAP_VERSION} && \
 	make prefix=${TOOLCHAIN_PREFIX} \
 		BUILD_CC=gcc \
-		CC=arm-unknown-linux-musleabihf-gcc \
-		AR=arm-unknown-linux-musleabihf-ar \
-		RANLIB=arm-unknown-linux-musleabihf-ranlib \
-		OBJCOPY=arm-unknown-linux-musleabihf-objcopy \
+		CC=arm-bemos-linux-musleabihf-gcc \
+		AR=arm-bemos-linux-musleabihf-ar \
+		RANLIB=arm-bemos-linux-musleabihf-ranlib \
+		OBJCOPY=arm-bemos-linux-musleabihf-objcopy \
 		lib=lib install
 
 ARG LINUX_PAM_VERSION=1.5.2
@@ -72,7 +72,7 @@ RUN wget https://github.com/linux-pam/linux-pam/releases/download/v${LINUX_PAM_V
 	tar xf /root/Temp/Linux-PAM-${LINUX_PAM_VERSION}.tar.xz -C /root/Temp && \
 	cd /root/Temp/Linux-PAM-${LINUX_PAM_VERSION} && \
 	./configure	--prefix=${TOOLCHAIN_PREFIX} \
-		--host=arm-unknown-linux-musleabihf && \
+		--host=arm-bemos-linux-musleabihf && \
 	make && make install
 
 ARG LIBCAP_NG_VERSION=0.8.3
@@ -80,8 +80,8 @@ RUN wget https://github.com/stevegrubb/libcap-ng/archive/refs/tags/v${LIBCAP_NG_
 	tar xf /root/Temp/v${LIBCAP_NG_VERSION}.tar.gz -C /root/Temp && \
 	cd /root/Temp/libcap-ng-${LIBCAP_NG_VERSION} && \
 	./autogen.sh && \
- 	./configure CC=arm-unknown-linux-musleabihf-gcc --prefix=${TOOLCHAIN_PREFIX} \
-		--host=arm-unknown-linux-musleabihf && \
+ 	./configure CC=arm-bemos-linux-musleabihf-gcc --prefix=${TOOLCHAIN_PREFIX} \
+		--host=arm-bemos-linux-musleabihf && \
 	make && make install
 
 ARG UTIL_LINUX_VERSION=2.38.1
@@ -89,9 +89,9 @@ RUN wget https://github.com/util-linux/util-linux/archive/refs/tags/v${UTIL_LINU
 	tar xf /root/Temp/v${UTIL_LINUX_VERSION}.tar.gz -C /root/Temp && \
 	cd /root/Temp/util-linux-${UTIL_LINUX_VERSION} && \
 	./autogen.sh && \
-	CC=arm-unknown-linux-musleabihf-gcc ./configure \
+	CC=arm-bemos-linux-musleabihf-gcc ./configure \
 		--prefix=${TOOLCHAIN_PREFIX} \
-		--host=arm-unknown-linux-musleabihf --disable-all-programs --enable-libmount --enable-libblkid && \
+		--host=arm-bemos-linux-musleabihf --disable-all-programs --enable-libmount --enable-libblkid && \
 	make && make install
 
 COPY arm-gcc.txt /root/arm-gcc.txt
@@ -132,7 +132,7 @@ RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_
 	tar -xzf /root/Temp/openssl-${OPENSSL_VERSION}.tar.gz -C /root/Temp && \
 	cd /root/Temp/openssl-openssl-${OPENSSL_VERSION} && \
 	CC=gcc perl ./Configure linux-armv4 \
-		--cross-compile-prefix=arm-unknown-linux-musleabihf- \
+		--cross-compile-prefix=arm-bemos-linux-musleabihf- \
 		--prefix=${TOOLCHAIN_PREFIX} \
 		no-shared && \
 	make -j 6 && \
@@ -142,7 +142,7 @@ RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_
 	tar -xzf /root/Temp/boost_1_81_0.tar.gz -C /root/Temp && \
 	cd /root/Temp/boost_1_81_0 && \
 	./bootstrap.sh && \
-	sed -i 's/using gcc/using gcc : arm : arm-unknown-linux-musleabihf-g++/g' project-config.jam && \
+	sed -i 's/using gcc/using gcc : arm : arm-bemos-linux-musleabihf-g++/g' project-config.jam && \
 	./b2 install toolset=gcc-arm --without-python \
 		--prefix=${TOOLCHAIN_PREFIX}
 
@@ -150,8 +150,8 @@ ARG MODBUS_VERSION=3.1.10
 RUN wget https://github.com/stephane/libmodbus/releases/download/v${MODBUS_VERSION}/libmodbus-${MODBUS_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/libmodbus-${MODBUS_VERSION}.tar.gz -C /root/Temp && \
 	cd /root/Temp/libmodbus-${MODBUS_VERSION} && \
-	./configure CC=arm-unknown-linux-musleabihf-gcc --prefix=${TOOLCHAIN_PREFIX} \
-		--host=arm-unknown-linux-musleabihf \
+	./configure CC=arm-bemos-linux-musleabihf-gcc --prefix=${TOOLCHAIN_PREFIX} \
+		--host=arm-bemos-linux-musleabihf \
 		--with-pic --enable-static --enable-shared=no && \
 	make && make install
 
@@ -160,9 +160,9 @@ RUN wget https://github.com/lua/lua/archive/refs/tags/v${LUA_VERSION}.tar.gz -P 
 	tar -xzf /root/Temp/v${LUA_VERSION}.tar.gz -C /root/Temp && \
 	cd /root/Temp/lua-${LUA_VERSION} && \
 	sed -i 's/-march=native/-march=armv7-a -mtune=cortex-a9 -mfpu=neon/g' makefile && \
-	make CC=arm-unknown-linux-musleabihf-gcc \
-		AR="arm-unknown-linux-musleabihf-ar rc"  \
-		RANLIB=arm-unknown-linux-musleabihf-ranlib \
+	make CC=arm-bemos-linux-musleabihf-gcc \
+		AR="arm-bemos-linux-musleabihf-ar rc"  \
+		RANLIB=arm-bemos-linux-musleabihf-ranlib \
 		MYCFLAGS="-std=c99 -DLUA_USE_LINUX" \
 		liblua.a && \
 	mkdir -p ${TOOLCHAIN_PREFIX}/include/lua5.4 && \
