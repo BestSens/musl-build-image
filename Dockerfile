@@ -174,7 +174,7 @@ RUN cd /root/Temp/lua-${LUA_VERSION} && \
 		-e s#@INCLUDEDIR@#${TOOLCHAIN_PREFIX}/include/lua5.4# lua.pc.in > lua5.4.pc && \
 	cp lua5.4.pc ${TOOLCHAIN_PREFIX}/lib/pkgconfig
 
-ARG CMAKE_VERSION=3.25.1
+ARG CMAKE_VERSION=3.25.2
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/cmake-${CMAKE_VERSION}.tar.gz -C /root/Temp && \
 	/root/Temp/cmake-${CMAKE_VERSION}/bootstrap && \
