@@ -126,7 +126,7 @@ RUN cd /root/Temp/systemd-${SYSTEMD_VERSION} && mkdir build && \
 	mkdir ${TOOLCHAIN_PREFIX}/include/systemd && \
 	cp src/systemd/*.h ${TOOLCHAIN_PREFIX}/include/systemd
 
-ARG OPENSSL_VERSION=3.0.7
+ARG OPENSSL_VERSION=3.0.8
 SHELL ["/bin/bash", "-c"]
 RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/openssl-${OPENSSL_VERSION}.tar.gz -C /root/Temp && \
