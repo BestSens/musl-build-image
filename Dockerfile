@@ -39,7 +39,7 @@ RUN wget https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz -P /root/Temp && 
 	make install
 
 RUN cd /root/Temp && git clone -n https://github.com/crosstool-ng/crosstool-ng.git && \
-	cd crosstool-ng && git checkout 190b8392da5f0e51d3a116d14bf3391231c93798 && \
+	cd crosstool-ng && git checkout 89671bf23652d2d8252ea2f369e9b2d1e8a127dc && \
 	./bootstrap && \
 	./configure && \
 	make && \
@@ -126,7 +126,7 @@ RUN cd /root/Temp/systemd-${SYSTEMD_VERSION} && mkdir build && \
 	mkdir ${TOOLCHAIN_PREFIX}/include/systemd && \
 	cp src/systemd/*.h ${TOOLCHAIN_PREFIX}/include/systemd
 
-ARG OPENSSL_VERSION=3.0.8
+ARG OPENSSL_VERSION=3.1.0
 SHELL ["/bin/bash", "-c"]
 RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/openssl-${OPENSSL_VERSION}.tar.gz -C /root/Temp && \
@@ -174,7 +174,7 @@ RUN cd /root/Temp/lua-${LUA_VERSION} && \
 		-e s#@INCLUDEDIR@#${TOOLCHAIN_PREFIX}/include/lua5.4# lua.pc.in > lua5.4.pc && \
 	cp lua5.4.pc ${TOOLCHAIN_PREFIX}/lib/pkgconfig
 
-ARG CMAKE_VERSION=3.25.2
+ARG CMAKE_VERSION=3.26.1
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/cmake-${CMAKE_VERSION}.tar.gz -C /root/Temp && \
 	/root/Temp/cmake-${CMAKE_VERSION}/bootstrap && \
