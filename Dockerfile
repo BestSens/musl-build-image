@@ -55,9 +55,9 @@ ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-bemos-linux-musleabihf/arm-bemos-linux-mus
 
 ENV PKG_CONFIG_LIBDIR=${TOOLCHAIN_PREFIX}/lib
 
-ARG LIBCAP_VERSION=2.66
-RUN wget https://mirrors.edge.kernel.org/debian/pool/main/libc/libcap2/libcap2_${LIBCAP_VERSION}.orig.tar.xz -P /root/Temp && \
-	tar xf /root/Temp/libcap2_${LIBCAP_VERSION}.orig.tar.xz -C /root/Temp && \
+ARG LIBCAP_VERSION=2.67
+RUN wget https://mirrors.edge.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-${LIBCAP_VERSION}.tar.xz -P /root/Temp && \
+	tar xf /root/Temp/libcap-${LIBCAP_VERSION}.tar.xz -C /root/Temp && \
 	cd /root/Temp/libcap-${LIBCAP_VERSION} && \
 	make prefix=${TOOLCHAIN_PREFIX} \
 		BUILD_CC=gcc \
