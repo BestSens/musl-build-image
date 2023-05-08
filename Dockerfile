@@ -39,7 +39,7 @@ RUN wget https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz -P /root/Temp && 
 	make install
 
 RUN cd /root/Temp && git clone -n https://github.com/crosstool-ng/crosstool-ng.git && \
-	cd crosstool-ng && git checkout 89671bf23652d2d8252ea2f369e9b2d1e8a127dc && \
+	cd crosstool-ng && git checkout 943364711a650d9b9e84c1b42c91cc0265b6ab5c && \
 	./bootstrap && \
 	./configure && \
 	make && \
@@ -137,7 +137,7 @@ RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_
 		no-shared && \
 	make -j 6 && \
 	make install
-	
+
 RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_1_82_0.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/boost_1_82_0.tar.gz -C /root/Temp && \
 	cd /root/Temp/boost_1_82_0 && \
@@ -177,8 +177,9 @@ RUN cd /root/Temp/lua-${LUA_VERSION} && \
 ARG CMAKE_VERSION=3.26.3
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/cmake-${CMAKE_VERSION}.tar.gz -C /root/Temp && \
-	/root/Temp/cmake-${CMAKE_VERSION}/bootstrap && \
-	make -j 6 /root/Temp/cmake-${CMAKE_VERSION} && \
-	make install /root/Temp/cmake-${CMAKE_VERSION}
+	cd /root/Temp/cmake-${CMAKE_VERSION} && \
+	./bootstrap && \
+	make -j 6 && \
+	make install
 
 RUN rm -Rf /root/Temp
