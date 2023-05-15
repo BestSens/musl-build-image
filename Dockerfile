@@ -39,7 +39,7 @@ RUN wget https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz -P /root/Temp && 
 	make install
 
 RUN cd /root/Temp && git clone -n https://github.com/crosstool-ng/crosstool-ng.git && \
-	cd crosstool-ng && git checkout 943364711a650d9b9e84c1b42c91cc0265b6ab5c && \
+	cd crosstool-ng && git checkout e8b3eccd8a036e6f3602cd25b2307e3db5476734 && \
 	./bootstrap && \
 	./configure && \
 	make && \
