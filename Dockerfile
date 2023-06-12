@@ -39,7 +39,7 @@ RUN wget https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz -P /root/Temp && 
 	make install
 
 RUN cd /root/Temp && git clone -n https://github.com/crosstool-ng/crosstool-ng.git && \
-	cd crosstool-ng && git checkout e8b3eccd8a036e6f3602cd25b2307e3db5476734 && \
+	cd crosstool-ng && git checkout 227d99d7f3115f3a078595a580d2b307dcd23e93 && \
 	./bootstrap && \
 	./configure && \
 	make && \
@@ -155,7 +155,7 @@ RUN wget https://github.com/stephane/libmodbus/releases/download/v${MODBUS_VERSI
 		--with-pic --enable-static --enable-shared=no && \
 	make && make install
 
-ARG LUA_VERSION=5.4.4
+ARG LUA_VERSION=5.4.6
 RUN wget https://github.com/lua/lua/archive/refs/tags/v${LUA_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/v${LUA_VERSION}.tar.gz -C /root/Temp && \
 	cd /root/Temp/lua-${LUA_VERSION} && \
