@@ -176,17 +176,15 @@ RUN cd /root/Temp/lua-${LUA_VERSION} && \
 
 RUN rm -Rf /root/Temp
 
-FROM fedora:38
-RUN dnf install -y \
+FROM alpine:edge
+RUN apk add --no-cache \
 	cmake \
 	git \
 	ninja-build \
-	which \
-	ccache \
-	pkgconf
-RUN dnf clean all && rm -rf /var/cache/yum
+	samurai \
+	ccache
 
 COPY --from=builder /opt/x-tools/ /opt/x-tools/
-ENV PATH=${PATH}:/opt/x-tools/arm-bemos-linux-musleabihf/bin
+ENV PATH=${PATH}:/opt/x-tools/arm-bemos-linux-musleabihf/bin:/usr/lib/ninja-build/bin
 ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-bemos-linux-musleabihf/arm-bemos-linux-musleabihf
 ENV PKG_CONFIG_LIBDIR=${TOOLCHAIN_PREFIX}/lib
