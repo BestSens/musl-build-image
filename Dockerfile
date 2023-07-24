@@ -39,7 +39,7 @@ RUN wget https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz -P /root/Temp && 
 	make install
 
 RUN cd /root/Temp && git clone -n https://github.com/crosstool-ng/crosstool-ng.git && \
-	cd crosstool-ng && git checkout 227d99d7f3115f3a078595a580d2b307dcd23e93 && \
+	cd crosstool-ng && git checkout 2d8dd4f5e8ce815f11d74efe53cc920bb80bc2c0 && \
 	./bootstrap && \
 	./configure && \
 	make && \
@@ -183,6 +183,7 @@ RUN dnf install -y \
 	ninja-build \
 	which \
 	ccache \
+	samurai \
 	pkgconf
 RUN dnf clean all && rm -rf /var/cache/yum
 
