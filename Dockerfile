@@ -39,7 +39,7 @@ RUN wget https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz -P /root/Temp && 
 	make install
 
 RUN cd /root/Temp && git clone -n https://github.com/crosstool-ng/crosstool-ng.git && \
-	cd crosstool-ng && git checkout 2d8dd4f5e8ce815f11d74efe53cc920bb80bc2c0 && \
+	cd crosstool-ng && git checkout 465207b7a21f00b94b934151c0667275d342cb56 && \
 	./bootstrap && \
 	./configure && \
 	make && \
@@ -126,7 +126,7 @@ RUN cd /root/Temp/systemd-${SYSTEMD_VERSION} && mkdir build && \
 	mkdir ${TOOLCHAIN_PREFIX}/include/systemd && \
 	cp src/systemd/*.h ${TOOLCHAIN_PREFIX}/include/systemd
 
-ARG OPENSSL_VERSION=3.1.1
+ARG OPENSSL_VERSION=3.1.2
 SHELL ["/bin/bash", "-c"]
 RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/openssl-${OPENSSL_VERSION}.tar.gz -C /root/Temp && \
