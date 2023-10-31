@@ -47,6 +47,7 @@ RUN cd /root/Temp && git clone -n https://github.com/crosstool-ng/crosstool-ng.g
 
 RUN mkdir -p /root/Temp/ct-ng
 COPY ct-ng.config /root/Temp/ct-ng/.config
+RUN cd /root/Temp/ct-ng && ct-ng upgradeconfig 
 RUN cd /root/Temp/ct-ng && ct-ng build
 
 ENV PATH=${PATH}:/opt/x-tools/arm-bemos-linux-musleabihf/bin
