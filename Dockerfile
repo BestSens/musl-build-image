@@ -31,9 +31,10 @@ RUN rm -Rf /var/lib/apt/lists/*
 
 RUN mkdir -p /root/Temp
 
-RUN wget https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz -P /root/Temp && \
-	tar xzf /root/Temp/autoconf-2.71.tar.gz -C /root/Temp && \
-	cd /root/Temp/autoconf-2.71 && \
+ARG AUTOCONF_VERSION=2.72
+RUN wget https://ftp.gnu.org/gnu/autoconf/autoconf-${AUTOCONF_VERSION}.tar.gz -P /root/Temp && \
+	tar xzf /root/Temp/autoconf-${AUTOCONF_VERSION}.tar.gz -C /root/Temp && \
+	cd /root/Temp/autoconf-${AUTOCONF_VERSION} && \
 	./configure && \
 	make && \
 	make install
@@ -56,7 +57,7 @@ ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-bemos-linux-musleabihf/arm-bemos-linux-mus
 
 ENV PKG_CONFIG_LIBDIR=${TOOLCHAIN_PREFIX}/lib
 
-ARG LIBCAP_VERSION=2.67
+ARG LIBCAP_VERSION=2.68
 RUN wget https://mirrors.edge.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-${LIBCAP_VERSION}.tar.xz -P /root/Temp && \
 	tar xf /root/Temp/libcap-${LIBCAP_VERSION}.tar.xz -C /root/Temp && \
 	cd /root/Temp/libcap-${LIBCAP_VERSION} && \
@@ -85,7 +86,7 @@ RUN wget https://github.com/stevegrubb/libcap-ng/archive/refs/tags/v${LIBCAP_NG_
 		--host=arm-bemos-linux-musleabihf && \
 	make && make install
 
-ARG UTIL_LINUX_VERSION=2.38.1
+ARG UTIL_LINUX_VERSION=2.39.3
 RUN wget https://github.com/util-linux/util-linux/archive/refs/tags/v${UTIL_LINUX_VERSION}.tar.gz -P /root/Temp && \
 	tar xf /root/Temp/v${UTIL_LINUX_VERSION}.tar.gz -C /root/Temp && \
 	cd /root/Temp/util-linux-${UTIL_LINUX_VERSION} && \
@@ -127,7 +128,7 @@ RUN cd /root/Temp/systemd-${SYSTEMD_VERSION} && mkdir build && \
 	mkdir ${TOOLCHAIN_PREFIX}/include/systemd && \
 	cp src/systemd/*.h ${TOOLCHAIN_PREFIX}/include/systemd
 
-ARG OPENSSL_VERSION=3.2.0
+ARG OPENSSL_VERSION=3.2.1
 SHELL ["/bin/bash", "-c"]
 RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/openssl-${OPENSSL_VERSION}.tar.gz -C /root/Temp && \
@@ -139,9 +140,9 @@ RUN wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${OPENSSL_
 	make -j 6 && \
 	make install
 
-RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz -P /root/Temp && \
-	tar -xzf /root/Temp/boost_1_83_0.tar.gz -C /root/Temp && \
-	cd /root/Temp/boost_1_83_0 && \
+RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.84.0/source/boost_1_84_0.tar.gz -P /root/Temp && \
+	tar -xzf /root/Temp/boost_1_84_0.tar.gz -C /root/Temp && \
+	cd /root/Temp/boost_1_84_0 && \
 	./bootstrap.sh && \
 	sed -i 's/using gcc/using gcc : arm : arm-bemos-linux-musleabihf-g++/g' project-config.jam && \
 	./b2 install toolset=gcc-arm --without-python \
@@ -177,7 +178,7 @@ RUN cd /root/Temp/lua-${LUA_VERSION} && \
 
 RUN rm -Rf /root/Temp
 
-FROM fedora:38
+FROM fedora:39
 RUN dnf install -y \
 	cmake \
 	git \
