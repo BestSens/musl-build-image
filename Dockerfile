@@ -186,10 +186,16 @@ RUN dnf install -y \
 	which \
 	ccache \
 	samurai \
-	pkgconf
+	pkgconf \
+	gcc
 RUN dnf clean all && rm -rf /var/cache/yum
 
 COPY --from=builder /opt/x-tools/ /opt/x-tools/
 ENV PATH=${PATH}:/opt/x-tools/arm-bemos-linux-musleabihf/bin
 ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-bemos-linux-musleabihf/arm-bemos-linux-musleabihf
 ENV PKG_CONFIG_LIBDIR=${TOOLCHAIN_PREFIX}/lib
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y -t armv7-unknown-linux-musleabihf
+COPY cargo_config.toml /.cargo/config.toml
+
+ENV PATH=/root/.cargo/bin:${PATH}

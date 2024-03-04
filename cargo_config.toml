@@ -1,0 +1,8 @@
+[build]
+[env]
+OPENSSL_STATIC = "1"
+ARMV7_UNKNOWN_LINUX_MUSLEABIHF_OPENSSL_DIR = "/opt/x-tools/arm-bemos-linux-musleabihf/arm-bemos-linux-musleabihf"
+
+[target.armv7-unknown-linux-musleabihf]
+linker = "arm-bemos-linux-musleabihf-gcc"
+rustflags = ["-C", "target-feature=+crt-static", "-C", "link-arg=-s"]
