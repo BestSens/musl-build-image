@@ -187,7 +187,8 @@ RUN dnf install -y \
 	ccache \
 	samurai \
 	pkgconf \
-	gcc
+	gcc \
+	nodejs
 RUN dnf clean all && rm -rf /var/cache/yum
 
 COPY --from=builder /opt/x-tools/ /opt/x-tools/
@@ -196,6 +197,6 @@ ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-bemos-linux-musleabihf/arm-bemos-linux-mus
 ENV PKG_CONFIG_LIBDIR=${TOOLCHAIN_PREFIX}/lib
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y -t armv7-unknown-linux-musleabihf
-COPY cargo_config.toml /.cargo/config.toml
-
 ENV PATH=/root/.cargo/bin:${PATH}
+RUN rustup target add armv7-unknown-linux-musleabihf
+COPY cargo_config.toml /.cargo/config.toml
