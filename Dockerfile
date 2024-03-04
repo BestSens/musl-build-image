@@ -198,5 +198,6 @@ ENV PKG_CONFIG_LIBDIR=${TOOLCHAIN_PREFIX}/lib
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y -t armv7-unknown-linux-musleabihf
 ENV PATH=/root/.cargo/bin:${PATH}
+RUN rustup default stable
 RUN rustup target add armv7-unknown-linux-musleabihf
 COPY cargo_config.toml /.cargo/config.toml
