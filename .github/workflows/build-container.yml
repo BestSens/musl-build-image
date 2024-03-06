@@ -23,7 +23,7 @@ jobs:
           docker run --rm -v $(pwd):/data ghcr.io/bestsens/musl-build-image:latest \
             /bin/tar -czvf /data/arm-bemos-linux-musleabihf.tar.gz /opt/x-tools/arm-bemos-linux-musleabihf/
       - name: Archive toolchain
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: toolchain archive
           path: arm-bemos-linux-musleabihf.tar.gz
