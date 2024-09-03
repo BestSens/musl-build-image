@@ -157,7 +157,7 @@ RUN wget https://github.com/stephane/libmodbus/releases/download/v${MODBUS_VERSI
 		--with-pic --enable-static --enable-shared=no && \
 	make && make install
 
-ARG LUA_VERSION=5.4.6
+ARG LUA_VERSION=5.4.7
 RUN wget https://github.com/lua/lua/archive/refs/tags/v${LUA_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/v${LUA_VERSION}.tar.gz -C /root/Temp && \
 	cd /root/Temp/lua-${LUA_VERSION} && \
