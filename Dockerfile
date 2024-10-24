@@ -57,7 +57,7 @@ ARG TOOLCHAIN_PREFIX=/opt/x-tools/arm-bemos-linux-musleabihf/arm-bemos-linux-mus
 
 ENV PKG_CONFIG_LIBDIR=${TOOLCHAIN_PREFIX}/lib
 
-ARG LIBCAP_VERSION=2.68
+ARG LIBCAP_VERSION=2.70
 RUN wget https://mirrors.edge.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-${LIBCAP_VERSION}.tar.xz -P /root/Temp && \
 	tar xf /root/Temp/libcap-${LIBCAP_VERSION}.tar.xz -C /root/Temp && \
 	cd /root/Temp/libcap-${LIBCAP_VERSION} && \
@@ -69,7 +69,7 @@ RUN wget https://mirrors.edge.kernel.org/pub/linux/libs/security/linux-privs/lib
 		OBJCOPY=arm-bemos-linux-musleabihf-objcopy \
 		lib=lib install
 
-ARG LINUX_PAM_VERSION=1.5.2
+ARG LINUX_PAM_VERSION=1.6.1
 RUN wget https://github.com/linux-pam/linux-pam/releases/download/v${LINUX_PAM_VERSION}/Linux-PAM-${LINUX_PAM_VERSION}.tar.xz -P /root/Temp && \
 	tar xf /root/Temp/Linux-PAM-${LINUX_PAM_VERSION}.tar.xz -C /root/Temp && \
 	cd /root/Temp/Linux-PAM-${LINUX_PAM_VERSION} && \
@@ -86,7 +86,7 @@ RUN wget https://github.com/stevegrubb/libcap-ng/archive/refs/tags/v${LIBCAP_NG_
 		--host=arm-bemos-linux-musleabihf && \
 	make && make install
 
-ARG UTIL_LINUX_VERSION=2.39.3
+ARG UTIL_LINUX_VERSION=2.40.2
 RUN wget https://github.com/util-linux/util-linux/archive/refs/tags/v${UTIL_LINUX_VERSION}.tar.gz -P /root/Temp && \
 	tar xf /root/Temp/v${UTIL_LINUX_VERSION}.tar.gz -C /root/Temp && \
 	cd /root/Temp/util-linux-${UTIL_LINUX_VERSION} && \
@@ -148,7 +148,7 @@ RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.86.0/source/boost_
 	./b2 install toolset=gcc-arm --without-python \
 		--prefix=${TOOLCHAIN_PREFIX}
 
-ARG MODBUS_VERSION=3.1.10
+ARG MODBUS_VERSION=3.1.11
 RUN wget https://github.com/stephane/libmodbus/releases/download/v${MODBUS_VERSION}/libmodbus-${MODBUS_VERSION}.tar.gz -P /root/Temp && \
 	tar -xzf /root/Temp/libmodbus-${MODBUS_VERSION}.tar.gz -C /root/Temp && \
 	cd /root/Temp/libmodbus-${MODBUS_VERSION} && \
